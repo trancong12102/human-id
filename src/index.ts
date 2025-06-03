@@ -6,7 +6,7 @@ import { base62 } from './base62.ts';
  * @param prefix The optional prefix to use for the ID. If not provided, no prefix or underscore will be used.
  * @returns A unique human-readable ID in the format "prefix_base62UUID" or just "base62UUID" if no prefix is provided.
  */
-export const humanId = (prefix?: string): string => {
+export const humanUUID = (prefix?: string): string => {
   const encodedId = base62.encode(Buffer.from(v7()));
   return typeof prefix !== 'undefined' ? `${prefix}_${encodedId}` : encodedId;
 };

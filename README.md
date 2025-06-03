@@ -33,22 +33,22 @@ pnpm add human-uuid
 ### Basic Usage
 
 ```typescript
-import { humanId } from 'human-uuid';
+import { humanUUID } from 'human-uuid';
 
 // Generate user IDs with prefix
-const userId = humanId('user');
+const userId = humanUUID('user');
 // Output: user_1BVXue8CnY6eSRFn2bDLFU
 
 // Generate order IDs with prefix
-const orderId = humanId('order');
+const orderId = humanUUID('order');
 // Output: order_1BVXue8D4K7gTRHp3eDMGV
 
 // Generate API key IDs with prefix
-const apiKeyId = humanId('api-key');
+const apiKeyId = humanUUID('api-key');
 // Output: api-key_1BVXue8DfN8hUSIq4fENHW
 
 // Generate IDs without prefix (no underscore)
-const simpleId = humanId();
+const simpleId = humanUUID();
 // Output: 1BVXue8CnY6eSRFn2bDLFU
 ```
 
@@ -56,30 +56,30 @@ const simpleId = humanId();
 
 ```typescript
 // Various entity types
-const productId = humanId('product'); // product_1BVXue8E2P9iVTJr5gFOIX
-const sessionId = humanId('session'); // session_1BVXue8EaQ0jWUKs6hGPJY
-const customerId = humanId('customer'); // customer_1BVXue8F1R1kXVLt7iHQKZ
+const productId = humanUUID('product'); // product_1BVXue8E2P9iVTJr5gFOIX
+const sessionId = humanUUID('session'); // session_1BVXue8EaQ0jWUKs6hGPJY
+const customerId = humanUUID('customer'); // customer_1BVXue8F1R1kXVLt7iHQKZ
 
 // No prefix (no underscore)
-const cleanId = humanId(); // 1BVXue8FcS2lYWMu8jIRLA
+const cleanId = humanUUID(); // 1BVXue8FcS2lYWMu8jIRLA
 
 // Empty prefix (results in ID starting with underscore)
-const underscoreId = humanId(''); // _1BVXue8FcS2lYWMu8jIRLA
+const underscoreId = humanUUID(''); // _1BVXue8FcS2lYWMu8jIRLA
 ```
 
 ### Working with Generated IDs
 
 ```typescript
 // All IDs are unique, even with the same prefix
-const id1 = humanId('user'); // user_1BVXue8G3T3mZXNv9kJSMB
-const id2 = humanId('user'); // user_1BVXue8GdU4nAYOw0lKTNC
-const id3 = humanId('user'); // user_1BVXue8H4V5oBZPx1mLUOD
+const id1 = humanUUID('user'); // user_1BVXue8G3T3mZXNv9kJSMB
+const id2 = humanUUID('user'); // user_1BVXue8GdU4nAYOw0lKTNC
+const id3 = humanUUID('user'); // user_1BVXue8H4V5oBZPx1mLUOD
 
 console.log((id1 !== id2) !== id3); // true
 
 // IDs without prefix are also unique
-const noPrefix1 = humanId(); // 1BVXue8G3T3mZXNv9kJSMB
-const noPrefix2 = humanId(); // 1BVXue8GdU4nAYOw0lKTNC
+const noPrefix1 = humanUUID(); // 1BVXue8G3T3mZXNv9kJSMB
+const noPrefix2 = humanUUID(); // 1BVXue8GdU4nAYOw0lKTNC
 
 console.log(noPrefix1 !== noPrefix2); // true
 ```
@@ -89,24 +89,24 @@ console.log(noPrefix1 !== noPrefix2); // true
 Since human-uuid uses UUID v7, IDs generated later will be lexicographically greater than earlier ones:
 
 ```typescript
-const firstId = humanId('task');
+const firstId = humanUUID('task');
 // Wait some time...
-const secondId = humanId('task');
+const secondId = humanUUID('task');
 
 // The second ID will be lexicographically greater than the first
 console.log(secondId > firstId); // true
 
 // This also works for IDs without prefix
-const firstNoPrefix = humanId();
+const firstNoPrefix = humanUUID();
 // Wait some time...
-const secondNoPrefix = humanId();
+const secondNoPrefix = humanUUID();
 
 console.log(secondNoPrefix > firstNoPrefix); // true
 ```
 
 ## API Reference
 
-### `humanId(prefix?: string): string`
+### `humanUUID(prefix?: string): string`
 
 Generates a unique human-readable ID.
 
@@ -122,15 +122,15 @@ Generates a unique human-readable ID.
 
 ```typescript
 // With prefix
-const id = humanId('user');
+const id = humanUUID('user');
 // Returns something like: "user_1BVXue8CnY6eSRFn2bDLFU"
 
 // Without prefix
-const id = humanId();
+const id = humanUUID();
 // Returns something like: "1BVXue8CnY6eSRFn2bDLFU"
 
 // With empty string prefix (includes underscore)
-const id = humanId('');
+const id = humanUUID('');
 // Returns something like: "_1BVXue8CnY6eSRFn2bDLFU"
 ```
 
@@ -196,7 +196,7 @@ pnpm run test
 ```text
 human-uuid/
 ├── src/
-│   ├── index.ts      # Main humanId function
+│   ├── index.ts      # Main humanUUID function
 │   └── base62.ts     # Base62 encoding utilities
 ├── test/
 │   └── human-uuid.test.ts  # Comprehensive test suite

@@ -2,24 +2,24 @@ import assert from 'node:assert';
 import { describe, it } from 'node:test';
 import { v7 as uuidV7, validate, version } from 'uuid';
 import { base62 } from '../src/base62.ts';
-import { humanId } from '../src/index.ts';
+import { humanUUID } from '../src/index.ts';
 
-describe('humanId', () => {
+describe('humanUUID', () => {
   describe('basic functionality', () => {
     it('should generate an ID with the correct format when prefix is provided', () => {
-      const id = humanId('user');
+      const id = humanUUID('user');
       assert.match(id, /^user_[0-9a-zA-Z]+$/);
     });
 
     it('should generate an ID without underscore when no prefix is provided', () => {
-      const id = humanId();
+      const id = humanUUID();
       assert.match(id, /^[0-9a-zA-Z]+$/);
       assert.ok(!id.includes('_'));
     });
 
     it('should include the prefix in the generated ID when provided', () => {
       const prefix = 'test';
-      const id = humanId(prefix);
+      const id = humanUUID(prefix);
       assert.ok(id.startsWith(`${prefix}_`));
     });
 
@@ -27,7 +27,7 @@ describe('humanId', () => {
       const prefixes = ['user', 'order', 'product', 'session', 'api-key'];
 
       prefixes.forEach((prefix) => {
-        const id = humanId(prefix);
+        const id = humanUUID(prefix);
         assert.ok(id.startsWith(`${prefix}_`));
         assert.match(id, new RegExp(`^${prefix}_[0-9a-zA-Z]+$`));
       });
@@ -40,7 +40,7 @@ describe('humanId', () => {
       const numTests = 100;
 
       for (let i = 0; i < numTests; i++) {
-        const id = humanId('test');
+        const id = humanUUID('test');
         assert.ok(!ids.has(id), 'ID should be unique');
         ids.add(id);
       }
@@ -53,7 +53,7 @@ describe('humanId', () => {
       const numTests = 100;
 
       for (let i = 0; i < numTests; i++) {
-        const id = humanId();
+        const id = humanUUID();
         assert.ok(!ids.has(id), 'ID should be unique');
         ids.add(id);
       }
@@ -62,9 +62,9 @@ describe('humanId', () => {
     });
 
     it('should generate different IDs when called multiple times', () => {
-      const id1 = humanId('user');
-      const id2 = humanId('user');
-      const id3 = humanId('user');
+      const id1 = humanUUID('user');
+      const id2 = humanUUID('user');
+      const id3 = humanUUID('user');
 
       assert.notStrictEqual(id1, id2);
       assert.notStrictEqual(id2, id3);
@@ -78,7 +78,7 @@ describe('humanId', () => {
 
       // Generate multiple IDs with small delays
       for (let i = 0; i < 5; i++) {
-        ids.push(humanId('test'));
+        ids.push(humanUUID('test'));
         // Small delay to ensure different timestamps
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -106,7 +106,7 @@ describe('humanId', () => {
 
       // Generate multiple IDs with small delays
       for (let i = 0; i < 5; i++) {
-        ids.push(humanId());
+        ids.push(humanUUID());
         // Small delay to ensure different timestamps
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -129,12 +129,12 @@ describe('humanId', () => {
     });
 
     it('should generate IDs that maintain chronological order with prefix', async () => {
-      const id1 = humanId('test');
+      const id1 = humanUUID('test');
 
       // Wait a bit to ensure different timestamps
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      const id2 = humanId('test');
+      const id2 = humanUUID('test');
 
       // Extract base62 parts
       const base62Part1 = id1.split('_')[1];
@@ -153,12 +153,12 @@ describe('humanId', () => {
     });
 
     it('should generate IDs that maintain chronological order without prefix', async () => {
-      const id1 = humanId();
+      const id1 = humanUUID();
 
       // Wait a bit to ensure different timestamps
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      const id2 = humanId();
+      const id2 = humanUUID();
 
       // Decode to get the raw UUID bytes
       const buffer1 = Buffer.from(base62.decode(id1));
@@ -175,7 +175,7 @@ describe('humanId', () => {
 
   describe('base62 encoding', () => {
     it('should use base62 encoding for the UUID part with prefix', () => {
-      const id = humanId('test');
+      const id = humanUUID('test');
       const base62Part = id.split('_')[1];
 
       // Base62 should only contain alphanumeric characters
@@ -186,7 +186,7 @@ describe('humanId', () => {
     });
 
     it('should use base62 encoding for the UUID part without prefix', () => {
-      const id = humanId();
+      const id = humanUUID();
 
       // Base62 should only contain alphanumeric characters
       assert.match(id, /^[0-9a-zA-Z]+$/);
@@ -211,13 +211,13 @@ describe('humanId', () => {
 
   describe('edge cases', () => {
     it('should handle undefined prefix (no prefix provided)', () => {
-      const id = humanId();
+      const id = humanUUID();
       assert.match(id, /^[0-9a-zA-Z]+$/);
       assert.ok(!id.includes('_'));
     });
 
     it('should handle empty string prefix', () => {
-      const id = humanId('');
+      const id = humanUUID('');
       assert.match(id, /^_[0-9a-zA-Z]+$/);
     });
 
@@ -225,7 +225,7 @@ describe('humanId', () => {
       const specialPrefixes = ['user-123', 'api_key', 'test.env', 'my@prefix'];
 
       specialPrefixes.forEach((prefix) => {
-        const id = humanId(prefix);
+        const id = humanUUID(prefix);
         assert.ok(id.startsWith(`${prefix}_`));
         assert.ok(id.split('_').length >= 2);
       });
@@ -233,13 +233,13 @@ describe('humanId', () => {
 
     it('should handle long prefixes', () => {
       const longPrefix = 'a'.repeat(100);
-      const id = humanId(longPrefix);
+      const id = humanUUID(longPrefix);
       assert.ok(id.startsWith(`${longPrefix}_`));
     });
 
     it('should handle numeric prefixes', () => {
       const numericPrefix = '12345';
-      const id = humanId(numericPrefix);
+      const id = humanUUID(numericPrefix);
       assert.ok(id.startsWith(`${numericPrefix}_`));
     });
   });
@@ -249,7 +249,7 @@ describe('humanId', () => {
       const start = performance.now();
 
       for (let i = 0; i < 1000; i++) {
-        humanId('perf-test');
+        humanUUID('perf-test');
       }
 
       const duration = performance.now() - start;
@@ -262,7 +262,7 @@ describe('humanId', () => {
       const start = performance.now();
 
       for (let i = 0; i < 1000; i++) {
-        humanId();
+        humanUUID();
       }
 
       const duration = performance.now() - start;
@@ -274,7 +274,9 @@ describe('humanId', () => {
 
   describe('integration', () => {
     it('should work consistently across multiple calls with prefix', () => {
-      const results = Array.from({ length: 50 }, () => humanId('integration'));
+      const results = Array.from({ length: 50 }, () =>
+        humanUUID('integration'),
+      );
 
       // All should have correct format
       results.forEach((id) => {
@@ -287,7 +289,7 @@ describe('humanId', () => {
     });
 
     it('should work consistently across multiple calls without prefix', () => {
-      const results = Array.from({ length: 50 }, () => humanId());
+      const results = Array.from({ length: 50 }, () => humanUUID());
 
       // All should have correct format
       results.forEach((id) => {
