@@ -1,0 +1,31 @@
+{
+  "name": "human-id",
+  "version": "1.0.0",
+  "description": "Small library to generate human-readable IDs based on UUID v7.",
+  "keywords": [],
+  "license": "MIT",
+  "author": "Tran Cong <trancong12102@gmail.com>",
+  "type": "module",
+  "exports": {
+    "import": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noEmit",
+    "format": "prettier --write .",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "base-x": "^5.0.1",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.4.2",
+    "@types/node": "^22.15.29",
+    "prettier": "^3.5.3",
+    "prettier-plugin-packagejson": "^2.5.15",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@10.11.1+sha512.e519b9f7639869dc8d5c3c5dfef73b3f091094b0a006d7317353c72b124e80e1afd429732e28705ad6bfa1ee879c1fce46c128ccebd3192101f43dd67c667912"
+}
