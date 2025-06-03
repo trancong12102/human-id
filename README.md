@@ -1,5 +1,7 @@
 # human-uuid
 
+![NPM Version](https://img.shields.io/npm/v/human-uuid)
+
 A small library to generate human-readable IDs based on UUID v7.
 
 ## Features
