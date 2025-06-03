@@ -1,4 +1,4 @@
-# human-id
+# human-uuid
 
 A small library to generate human-readable IDs based on UUID v7.
 
@@ -15,15 +15,15 @@ A small library to generate human-readable IDs based on UUID v7.
 ## Installation
 
 ```bash
-npm install human-id
+npm install human-uuid
 ```
 
 ```bash
-yarn add human-id
+yarn add human-uuid
 ```
 
 ```bash
-pnpm add human-id
+pnpm add human-uuid
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ pnpm add human-id
 ### Basic Usage
 
 ```typescript
-import { humanId } from 'human-id';
+import { humanId } from 'human-uuid';
 
 // Generate user IDs with prefix
 const userId = humanId('user');
@@ -84,7 +84,7 @@ console.log(noPrefix1 !== noPrefix2); // true
 
 ### Time-based Ordering
 
-Since human-id uses UUID v7, IDs generated later will be lexicographically greater than earlier ones:
+Since human-uuid uses UUID v7, IDs generated later will be lexicographically greater than earlier ones:
 
 ```typescript
 const firstId = humanId('task');
@@ -164,7 +164,7 @@ The library uses base62 encoding for the UUID portion, which:
 
 ```bash
 git clone <repository-url>
-cd human-id
+cd human-uuid
 ```
 
 1. Install dependencies:
@@ -192,12 +192,12 @@ pnpm run test
 ### Project Structure
 
 ```text
-human-id/
+human-uuid/
 ├── src/
 │   ├── index.ts      # Main humanId function
 │   └── base62.ts     # Base62 encoding utilities
 ├── test/
-│   └── human-id.test.ts  # Comprehensive test suite
+│   └── human-uuid.test.ts  # Comprehensive test suite
 ├── dist/             # Built JavaScript and type definitions
 ├── package.json
 ├── tsconfig.json
@@ -234,7 +234,7 @@ The test suite validates:
 
 ## Performance
 
-human-id is designed for high performance:
+human-uuid is designed for high performance:
 
 - Can generate **1000+ unique IDs per second**
 - Minimal memory footprint

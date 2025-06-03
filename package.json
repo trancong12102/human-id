@@ -1,5 +1,5 @@
 {
-  "name": "human-id",
+  "name": "human-uuid",
   "version": "1.0.0",
   "description": "Small library to generate human-readable IDs based on UUID v7.",
   "keywords": [],
