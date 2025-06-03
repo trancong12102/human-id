@@ -1,8 +1,12 @@
 {
   "name": "human-uuid",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Small library to generate human-readable IDs based on UUID v7.",
   "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trancong12102/human-uuid"
+  },
   "license": "MIT",
   "author": "Tran Cong <trancong12102@gmail.com>",
   "type": "module",
