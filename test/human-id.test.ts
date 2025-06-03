@@ -6,12 +6,18 @@ import { humanId } from '../src/index.ts';
 
 describe('humanId', () => {
   describe('basic functionality', () => {
-    it('should generate an ID with the correct format', () => {
+    it('should generate an ID with the correct format when prefix is provided', () => {
       const id = humanId('user');
       assert.match(id, /^user_[0-9a-zA-Z]+$/);
     });
 
-    it('should include the prefix in the generated ID', () => {
+    it('should generate an ID without underscore when no prefix is provided', () => {
+      const id = humanId();
+      assert.match(id, /^[0-9a-zA-Z]+$/);
+      assert.ok(!id.includes('_'));
+    });
+
+    it('should include the prefix in the generated ID when provided', () => {
       const prefix = 'test';
       const id = humanId(prefix);
       assert.ok(id.startsWith(`${prefix}_`));
@@ -42,6 +48,19 @@ describe('humanId', () => {
       assert.strictEqual(ids.size, numTests);
     });
 
+    it('should generate unique IDs without prefix', () => {
+      const ids = new Set();
+      const numTests = 100;
+
+      for (let i = 0; i < numTests; i++) {
+        const id = humanId();
+        assert.ok(!ids.has(id), 'ID should be unique');
+        ids.add(id);
+      }
+
+      assert.strictEqual(ids.size, numTests);
+    });
+
     it('should generate different IDs when called multiple times', () => {
       const id1 = humanId('user');
       const id2 = humanId('user');
@@ -54,7 +73,7 @@ describe('humanId', () => {
   });
 
   describe('UUID v7 properties', () => {
-    it('should use UUID v7 internally (time-based ordering)', async () => {
+    it('should use UUID v7 internally (time-based ordering) with prefix', async () => {
       const ids: string[] = [];
 
       // Generate multiple IDs with small delays
@@ -82,7 +101,34 @@ describe('humanId', () => {
       });
     });
 
-    it('should generate IDs that maintain chronological order', async () => {
+    it('should use UUID v7 internally (time-based ordering) without prefix', async () => {
+      const ids: string[] = [];
+
+      // Generate multiple IDs with small delays
+      for (let i = 0; i < 5; i++) {
+        ids.push(humanId());
+        // Small delay to ensure different timestamps
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      // Extract the base62 parts and decode them back to UUIDs
+      const uuidParts = ids.map((id) => {
+        const buffer = base62.decode(id);
+        const uuidStr = Buffer.from(buffer).toString();
+        return uuidStr;
+      });
+
+      // Verify they are valid UUID v7s (version 7)
+      uuidParts.forEach((uuid) => {
+        assert.equal(
+          validate(uuid) && version(uuid) === 7,
+          true,
+          `Invalid UUID: ${uuid}`,
+        );
+      });
+    });
+
+    it('should generate IDs that maintain chronological order with prefix', async () => {
       const id1 = humanId('test');
 
       // Wait a bit to ensure different timestamps
@@ -105,10 +151,30 @@ describe('humanId', () => {
 
       assert.ok(Buffer.compare(timestamp1, timestamp2) <= 0);
     });
+
+    it('should generate IDs that maintain chronological order without prefix', async () => {
+      const id1 = humanId();
+
+      // Wait a bit to ensure different timestamps
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const id2 = humanId();
+
+      // Decode to get the raw UUID bytes
+      const buffer1 = Buffer.from(base62.decode(id1));
+      const buffer2 = Buffer.from(base62.decode(id2));
+
+      // For UUID v7, the first 6 bytes represent the timestamp
+      // The first ID should have a smaller or equal timestamp
+      const timestamp1 = buffer1.subarray(0, 6);
+      const timestamp2 = buffer2.subarray(0, 6);
+
+      assert.ok(Buffer.compare(timestamp1, timestamp2) <= 0);
+    });
   });
 
   describe('base62 encoding', () => {
-    it('should use base62 encoding for the UUID part', () => {
+    it('should use base62 encoding for the UUID part with prefix', () => {
       const id = humanId('test');
       const base62Part = id.split('_')[1];
 
@@ -117,6 +183,16 @@ describe('humanId', () => {
 
       // Should be able to decode it back
       assert.doesNotThrow(() => base62.decode(base62Part));
+    });
+
+    it('should use base62 encoding for the UUID part without prefix', () => {
+      const id = humanId();
+
+      // Base62 should only contain alphanumeric characters
+      assert.match(id, /^[0-9a-zA-Z]+$/);
+
+      // Should be able to decode it back
+      assert.doesNotThrow(() => base62.decode(id));
     });
 
     it('should produce consistent encoding/decoding', () => {
@@ -134,7 +210,13 @@ describe('humanId', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle empty prefix', () => {
+    it('should handle undefined prefix (no prefix provided)', () => {
+      const id = humanId();
+      assert.match(id, /^[0-9a-zA-Z]+$/);
+      assert.ok(!id.includes('_'));
+    });
+
+    it('should handle empty string prefix', () => {
       const id = humanId('');
       assert.match(id, /^_[0-9a-zA-Z]+$/);
     });
@@ -163,7 +245,7 @@ describe('humanId', () => {
   });
 
   describe('performance', () => {
-    it('should generate IDs quickly', () => {
+    it('should generate IDs quickly with prefix', () => {
       const start = performance.now();
 
       for (let i = 0; i < 1000; i++) {
@@ -175,15 +257,42 @@ describe('humanId', () => {
       // Should be able to generate 1000 IDs in under 100ms
       assert.ok(duration < 100, `Expected duration < 100ms, got ${duration}ms`);
     });
+
+    it('should generate IDs quickly without prefix', () => {
+      const start = performance.now();
+
+      for (let i = 0; i < 1000; i++) {
+        humanId();
+      }
+
+      const duration = performance.now() - start;
+
+      // Should be able to generate 1000 IDs in under 100ms
+      assert.ok(duration < 100, `Expected duration < 100ms, got ${duration}ms`);
+    });
   });
 
   describe('integration', () => {
-    it('should work consistently across multiple calls', () => {
+    it('should work consistently across multiple calls with prefix', () => {
       const results = Array.from({ length: 50 }, () => humanId('integration'));
 
       // All should have correct format
       results.forEach((id) => {
         assert.match(id, /^integration_[0-9a-zA-Z]+$/);
+      });
+
+      // All should be unique
+      const uniqueResults = new Set(results);
+      assert.strictEqual(uniqueResults.size, results.length);
+    });
+
+    it('should work consistently across multiple calls without prefix', () => {
+      const results = Array.from({ length: 50 }, () => humanId());
+
+      // All should have correct format
+      results.forEach((id) => {
+        assert.match(id, /^[0-9a-zA-Z]+$/);
+        assert.ok(!id.includes('_'));
       });
 
       // All should be unique

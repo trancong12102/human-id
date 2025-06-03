@@ -4,7 +4,8 @@ A small library to generate human-readable IDs based on UUID v7.
 
 ## Features
 
-- **Human-readable format**: Generated IDs use a clear `prefix_encodedUUID` format
+- **Human-readable format**: Generated IDs use a clear `prefix_encodedUUID` format (or just `encodedUUID` without prefix)
+- **Optional prefix**: Generate IDs with or without a prefix for maximum flexibility
 - **Time-based ordering**: Uses UUID v7 for chronological ordering of IDs
 - **Compact encoding**: Base62 encoding produces shorter, URL-safe identifiers
 - **High performance**: Can generate 1000+ IDs per second
@@ -32,17 +33,21 @@ pnpm add human-id
 ```typescript
 import { humanId } from 'human-id';
 
-// Generate user IDs
+// Generate user IDs with prefix
 const userId = humanId('user');
 // Output: user_1BVXue8CnY6eSRFn2bDLFU
 
-// Generate order IDs
+// Generate order IDs with prefix
 const orderId = humanId('order');
 // Output: order_1BVXue8D4K7gTRHp3eDMGV
 
-// Generate API key IDs
+// Generate API key IDs with prefix
 const apiKeyId = humanId('api-key');
 // Output: api-key_1BVXue8DfN8hUSIq4fENHW
+
+// Generate IDs without prefix (no underscore)
+const simpleId = humanId();
+// Output: 1BVXue8CnY6eSRFn2bDLFU
 ```
 
 ### Different Prefix Examples
@@ -53,8 +58,11 @@ const productId = humanId('product'); // product_1BVXue8E2P9iVTJr5gFOIX
 const sessionId = humanId('session'); // session_1BVXue8EaQ0jWUKs6hGPJY
 const customerId = humanId('customer'); // customer_1BVXue8F1R1kXVLt7iHQKZ
 
+// No prefix (no underscore)
+const cleanId = humanId(); // 1BVXue8FcS2lYWMu8jIRLA
+
 // Empty prefix (results in ID starting with underscore)
-const simpleId = humanId(''); // _1BVXue8FcS2lYWMu8jIRLA
+const underscoreId = humanId(''); // _1BVXue8FcS2lYWMu8jIRLA
 ```
 
 ### Working with Generated IDs
@@ -66,11 +74,17 @@ const id2 = humanId('user'); // user_1BVXue8GdU4nAYOw0lKTNC
 const id3 = humanId('user'); // user_1BVXue8H4V5oBZPx1mLUOD
 
 console.log((id1 !== id2) !== id3); // true
+
+// IDs without prefix are also unique
+const noPrefix1 = humanId(); // 1BVXue8G3T3mZXNv9kJSMB
+const noPrefix2 = humanId(); // 1BVXue8GdU4nAYOw0lKTNC
+
+console.log(noPrefix1 !== noPrefix2); // true
 ```
 
 ### Time-based Ordering
 
-Since human-id uses UUID v7, IDs generated later will be lexicographically greater than earlier ones when using the same prefix:
+Since human-id uses UUID v7, IDs generated later will be lexicographically greater than earlier ones:
 
 ```typescript
 const firstId = humanId('task');
@@ -79,36 +93,53 @@ const secondId = humanId('task');
 
 // The second ID will be lexicographically greater than the first
 console.log(secondId > firstId); // true
+
+// This also works for IDs without prefix
+const firstNoPrefix = humanId();
+// Wait some time...
+const secondNoPrefix = humanId();
+
+console.log(secondNoPrefix > firstNoPrefix); // true
 ```
 
 ## API Reference
 
-### `humanId(prefix: string): string`
+### `humanId(prefix?: string): string`
 
 Generates a unique human-readable ID.
 
 **Parameters:**
 
-- `prefix` (string): The prefix to prepend to the generated ID. Can contain letters, numbers, and special characters.
+- `prefix` (string, optional): The prefix to prepend to the generated ID. Can contain letters, numbers, and special characters. If not provided, no prefix or underscore will be used.
 
 **Returns:**
 
-- `string`: A unique ID in the format `{prefix}_{base62EncodedUUID}`
+- `string`: A unique ID in the format `{prefix}_{base62EncodedUUID}` if prefix is provided, or just `{base62EncodedUUID}` if no prefix is provided.
 
-**Example:**
+**Examples:**
 
 ```typescript
+// With prefix
 const id = humanId('user');
 // Returns something like: "user_1BVXue8CnY6eSRFn2bDLFU"
+
+// Without prefix
+const id = humanId();
+// Returns something like: "1BVXue8CnY6eSRFn2bDLFU"
+
+// With empty string prefix (includes underscore)
+const id = humanId('');
+// Returns something like: "_1BVXue8CnY6eSRFn2bDLFU"
 ```
 
 ### ID Format
 
-Generated IDs follow this pattern:
+Generated IDs follow these patterns:
 
-- **Format**: `{prefix}_{base62UUID}`
-- **Prefix**: Any string you provide
-- **Separator**: Single underscore (`_`)
+- **With prefix**: `{prefix}_{base62UUID}`
+- **Without prefix**: `{base62UUID}`
+- **Prefix**: Any string you provide (optional)
+- **Separator**: Single underscore (`_`) - only present when prefix is provided
 - **UUID Part**: Base62-encoded UUID v7 (contains only `0-9`, `a-z`, `A-Z`)
 
 ### Base62 Encoding
@@ -136,7 +167,7 @@ git clone <repository-url>
 cd human-id
 ```
 
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 pnpm install
@@ -160,7 +191,7 @@ pnpm run test
 
 ### Project Structure
 
-```
+```text
 human-id/
 ├── src/
 │   ├── index.ts      # Main humanId function
@@ -194,12 +225,12 @@ pnpm run test
 
 The test suite validates:
 
-- ✅ Correct ID format (`prefix_base62UUID`)
+- ✅ Correct ID format with and without prefix
 - ✅ Uniqueness across multiple generations
 - ✅ Time-based chronological ordering
 - ✅ Base62 encoding consistency
 - ✅ Performance (1000+ IDs/second)
-- ✅ Edge cases (empty/special prefixes)
+- ✅ Edge cases (no prefix, empty/special prefixes)
 
 ## Performance
 
@@ -220,6 +251,7 @@ Perfect for generating:
 - **Session IDs**: `session_1BVXue8EaQ0jWUKs6hGPJY`
 - **API Keys**: `api-key_1BVXue8DfN8hUSIq4fENHW`
 - **Transaction IDs**: `txn_1BVXue8F1R1kXVLt7iHQKZ`
+- **Simple IDs**: `1BVXue8CnY6eSRFn2bDLFU` (without prefix)
 
 ## Dependencies
 
