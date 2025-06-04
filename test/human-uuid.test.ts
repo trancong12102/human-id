@@ -4,7 +4,79 @@ import { v7 as uuidV7, validate, version } from 'uuid';
 import { base62 } from '../src/base62.ts';
 import { humanUUID } from '../src/index.ts';
 
+// TypeScript type tests - these will cause compilation errors if types are wrong
+type TestUserType = ReturnType<typeof humanUUID<'user'>>;
+type ExpectedUserType = `user_${string}`;
+// This line will cause a TypeScript error if the types don't match
+const _userTypeTest: TestUserType = '' as ExpectedUserType;
+const _userTypeTest2: ExpectedUserType = '' as TestUserType;
+
+type TestOrderType = ReturnType<typeof humanUUID<'order'>>;
+type ExpectedOrderType = `order_${string}`;
+const _orderTypeTest: TestOrderType = '' as ExpectedOrderType;
+const _orderTypeTest2: ExpectedOrderType = '' as TestOrderType;
+
 describe('humanUUID', () => {
+  describe('TypeScript types', () => {
+    it('should return correct TypeScript type for generic prefix', () => {
+      const userID = humanUUID('user');
+      const orderID = humanUUID('order');
+      const apiKeyID = humanUUID('api-key');
+
+      // These assertions verify runtime behavior
+      assert.ok(userID.startsWith('user_'));
+      assert.ok(orderID.startsWith('order_'));
+      assert.ok(apiKeyID.startsWith('api-key_'));
+
+      // TypeScript should infer these as the correct template literal types
+      // userID should be of type `user_${string}`
+      // orderID should be of type `order_${string}`
+      // apiKeyID should be of type `api-key_${string}`
+
+      // Test that the type system recognizes the prefix correctly
+      const userPrefix: 'user' = userID.split('_')[0] as 'user';
+      const orderPrefix: 'order' = orderID.split('_')[0] as 'order';
+      const apiKeyPrefix: 'api-key' = apiKeyID.split('_')[0] as 'api-key';
+
+      assert.strictEqual(userPrefix, 'user');
+      assert.strictEqual(orderPrefix, 'order');
+      assert.strictEqual(apiKeyPrefix, 'api-key');
+    });
+
+    it('should maintain type safety with const assertions', () => {
+      // Test with const assertions to ensure literal types are preserved
+      const PREFIX = 'user' as const;
+      const id = humanUUID(PREFIX);
+
+      // This should be typed as `user_${string}`
+      assert.ok(id.startsWith('user_'));
+
+      // Type should be narrowed to the specific template literal
+      const prefix: 'user' = id.split('_')[0] as 'user';
+      assert.strictEqual(prefix, 'user');
+    });
+
+    it('should work with union types', () => {
+      type ValidPrefix = 'user' | 'order' | 'product';
+
+      const generateID = (prefix: ValidPrefix) => {
+        return humanUUID(prefix);
+      };
+
+      const userID = generateID('user');
+      const orderID = generateID('order');
+      const productID = generateID('product');
+
+      // Runtime checks
+      assert.ok(userID.startsWith('user_'));
+      assert.ok(orderID.startsWith('order_'));
+      assert.ok(productID.startsWith('product_'));
+
+      // Type should be `user_${string} | order_${string} | product_${string}`
+      // but each specific call should narrow to the correct type
+    });
+  });
+
   describe('basic functionality', () => {
     it('should generate an ID with the correct format when prefix is provided', () => {
       const id = humanUUID('user');
