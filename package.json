@@ -1,6 +1,6 @@
 {
   "name": "human-uuid",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Small library to generate human-readable IDs based on UUID v7.",
   "keywords": [],
   "repository": {
@@ -14,6 +14,11 @@
     "import": "./dist/index.js",
     "types": "./dist/index.d.ts"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
   "scripts": {
     "build": "tsc",
     "check-types": "tsc --noEmit",
@@ -31,5 +36,8 @@
     "prettier-plugin-packagejson": "^2.5.15",
     "typescript": "^5.8.3"
   },
-  "packageManager": "pnpm@10.11.1+sha512.e519b9f7639869dc8d5c3c5dfef73b3f091094b0a006d7317353c72b124e80e1afd429732e28705ad6bfa1ee879c1fce46c128ccebd3192101f43dd67c667912"
+  "packageManager": "pnpm@10.11.1+sha512.e519b9f7639869dc8d5c3c5dfef73b3f091094b0a006d7317353c72b124e80e1afd429732e28705ad6bfa1ee879c1fce46c128ccebd3192101f43dd67c667912",
+  "publishConfig": {
+    "access": "public"
+  }
 }
