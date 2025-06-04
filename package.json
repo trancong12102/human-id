@@ -1,6 +1,6 @@
 {
   "name": "human-uuid",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Small library to generate human-readable IDs based on UUID v7.",
   "keywords": [],
   "repository": {

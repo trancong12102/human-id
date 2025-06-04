@@ -8,7 +8,16 @@ import { base62 } from './base62.ts';
  */
 export const humanUUID = <Prefix extends string>(
   prefix: Prefix,
-): `${Prefix}_${string}` => {
+): HumanUUID<Prefix> => {
   const encodedId = base62.encode(Buffer.from(v7()));
   return `${prefix}_${encodedId}`;
 };
+
+/**
+ * Type representing a human-readable UUID with a specific prefix.
+ * @template Prefix The prefix to use for the ID.
+ * @example
+ * // Example usage:
+ * type MyHumanUUID = HumanUUID<'user'>; // 'user_<base62UUID>'
+ */
+export type HumanUUID<Prefix extends string> = `${Prefix}_${string}`;
