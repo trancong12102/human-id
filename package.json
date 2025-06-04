@@ -23,7 +23,7 @@
     "build": "tsc",
     "check-types": "tsc --noEmit",
     "format": "prettier --write .",
-    "publish": "pnpm build && pnpm publish",
+    "prepublish": "pnpm run build",
     "test": "node --test"
   },
   "dependencies": {
