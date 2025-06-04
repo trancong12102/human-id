@@ -1,6 +1,6 @@
 {
   "name": "human-uuid",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Small library to generate human-readable IDs based on UUID v7.",
   "keywords": [],
   "repository": {
@@ -23,6 +23,7 @@
     "build": "tsc",
     "check-types": "tsc --noEmit",
     "format": "prettier --write .",
+    "publish": "pnpm build && pnpm publish",
     "test": "node --test"
   },
   "dependencies": {
