@@ -1,6 +1,6 @@
 # human-uuid
 
-![NPM Version](https://img.shields.io/npm/v/human-uuid)
+[![NPM Version](https://img.shields.io/npm/v/human-uuid)](https://www.npmjs.com/package/human-uuid)
 
 Generate human-readable IDs with a prefix using UUID v7 and base58 encoding.
 
