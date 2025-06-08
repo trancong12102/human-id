@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
+import { base58 } from '@scure/base';
 import { v7 as uuidV7, validate, version } from 'uuid';
-import { base62 } from '../src/base62.ts';
 import { humanUUID } from '../src/index.ts';
 
 // TypeScript type tests - these will cause compilation errors if types are wrong
@@ -80,7 +80,10 @@ describe('humanUUID', () => {
   describe('basic functionality', () => {
     it('should generate an ID with the correct format when prefix is provided', () => {
       const id = humanUUID('user');
-      assert.match(id, /^user_[0-9a-zA-Z]+$/);
+      assert.match(
+        id,
+        /^user_[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$/,
+      );
     });
 
     it('should include the prefix in the generated ID when provided', () => {
@@ -95,7 +98,12 @@ describe('humanUUID', () => {
       prefixes.forEach((prefix) => {
         const id = humanUUID(prefix);
         assert.ok(id.startsWith(`${prefix}_`));
-        assert.match(id, new RegExp(`^${prefix}_[0-9a-zA-Z]+$`));
+        assert.match(
+          id,
+          new RegExp(
+            `^${prefix}_[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$`,
+          ),
+        );
       });
     });
   });
@@ -136,10 +144,10 @@ describe('humanUUID', () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
-      // Extract the base62 parts and decode them back to UUIDs
+      // Extract the base58 parts and decode them back to UUIDs
       const uuidParts = ids.map((id) => {
-        const base62Part = id.split('_')[1];
-        const buffer = base62.decode(base62Part);
+        const base58Part = id.split('_')[1];
+        const buffer = base58.decode(base58Part);
         const uuidStr = Buffer.from(buffer).toString();
         return uuidStr;
       });
@@ -162,13 +170,13 @@ describe('humanUUID', () => {
 
       const id2 = humanUUID('test');
 
-      // Extract base62 parts
-      const base62Part1 = id1.split('_')[1];
-      const base62Part2 = id2.split('_')[1];
+      // Extract base58 parts
+      const base58Part1 = id1.split('_')[1];
+      const base58Part2 = id2.split('_')[1];
 
       // Decode to get the raw UUID bytes
-      const buffer1 = Buffer.from(base62.decode(base62Part1));
-      const buffer2 = Buffer.from(base62.decode(base62Part2));
+      const buffer1 = Buffer.from(base58.decode(base58Part1));
+      const buffer2 = Buffer.from(base58.decode(base58Part2));
 
       // For UUID v7, the first 6 bytes represent the timestamp
       // The first ID should have a smaller or equal timestamp
@@ -179,24 +187,27 @@ describe('humanUUID', () => {
     });
   });
 
-  describe('base62 encoding', () => {
-    it('should use base62 encoding for the UUID part with prefix', () => {
+  describe('base58 encoding', () => {
+    it('should use base58 encoding for the UUID part with prefix', () => {
       const id = humanUUID('test');
-      const base62Part = id.split('_')[1];
+      const base58Part = id.split('_')[1];
 
-      // Base62 should only contain alphanumeric characters
-      assert.match(base62Part, /^[0-9a-zA-Z]+$/);
+      // Base58 should only contain alphanumeric characters (excluding 0, O, I, l)
+      assert.match(
+        base58Part,
+        /^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$/,
+      );
 
       // Should be able to decode it back
-      assert.doesNotThrow(() => base62.decode(base62Part));
+      assert.doesNotThrow(() => base58.decode(base58Part));
     });
 
     it('should produce consistent encoding/decoding', () => {
       // Test with a known UUID
       const testUuid = uuidV7();
       const buffer = Buffer.from(testUuid);
-      const encoded = base62.encode(buffer);
-      const decoded = base62.decode(encoded);
+      const encoded = base58.encode(buffer);
+      const decoded = base58.decode(encoded);
 
       assert.equal(
         Buffer.from(decoded).toString('hex'),
@@ -208,7 +219,10 @@ describe('humanUUID', () => {
   describe('edge cases', () => {
     it('should handle empty string prefix', () => {
       const id = humanUUID('');
-      assert.match(id, /^_[0-9a-zA-Z]+$/);
+      assert.match(
+        id,
+        /^_[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$/,
+      );
     });
 
     it('should handle prefixes with special characters', () => {
@@ -257,7 +271,10 @@ describe('humanUUID', () => {
 
       // All should have correct format
       results.forEach((id) => {
-        assert.match(id, /^integration_[0-9a-zA-Z]+$/);
+        assert.match(
+          id,
+          /^integration_[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$/,
+        );
       });
 
       // All should be unique

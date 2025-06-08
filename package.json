@@ -1,6 +1,6 @@
 {
   "name": "human-uuid",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Small library to generate human-readable IDs based on UUID v7.",
   "keywords": [],
   "repository": {
@@ -27,7 +27,7 @@
     "test": "node --test"
   },
   "dependencies": {
-    "base-x": "^5.0.1",
+    "@scure/base": "^1.2.6",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

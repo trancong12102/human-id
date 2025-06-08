@@ -8,9 +8,9 @@ importers:
 
   .:
     dependencies:
-      base-x:
-        specifier: ^5.0.1
-        version: 5.0.1
+      '@scure/base':
+        specifier: ^1.2.6
+        version: 1.2.6
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -97,11 +97,11 @@ packages:
     resolution: {integrity: sha512-YLT9Zo3oNPJoBjBc4q8G2mjU4tqIbf5CEOORbUUr48dCD9q3umJ3IPlVqOqDakPfd2HuwccBaqlGhN4Gmr5OWg==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
+  '@scure/base@1.2.6':
+    resolution: {integrity: sha512-g/nm5FgUa//MCj1gV09zTJTaM6KBAHqLN907YVQqf7zC49+DcO4B1so4ZX07Ef10Twr6nuqYEH9GEggFXA4Fmg==}
+
   '@types/node@22.15.29':
     resolution: {integrity: sha512-LNdjOkUDlU1RZb8e1kOIUpN1qQUlzGkEtbVNo53vbrwDg5om6oduhm4SiUaPW5ASTXhAiP0jInWG8Qx9fVlOeQ==}
-
-  base-x@5.0.1:
-    resolution: {integrity: sha512-M7uio8Zt++eg3jPj+rHMfCC+IuygQHHCOU+IYsVtik6FWjuYpVt/+MRKcgsAMHh8mMFAwnB+Bs+mTrFiXjMzKg==}
 
   debug@4.4.1:
     resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
@@ -279,11 +279,11 @@ snapshots:
 
   '@pkgr/core@0.2.7': {}
 
+  '@scure/base@1.2.6': {}
+
   '@types/node@22.15.29':
     dependencies:
       undici-types: 6.21.0
-
-  base-x@5.0.1: {}
 
   debug@4.4.1:
     dependencies:

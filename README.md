@@ -2,7 +2,7 @@
 
 ![NPM Version](https://img.shields.io/npm/v/human-uuid)
 
-Generate human-readable IDs with a prefix using UUID v7 and base62 encoding.
+Generate human-readable IDs with a prefix using UUID v7 and base58 encoding.
 
 ## Installation
 
@@ -32,7 +32,7 @@ console.log(secondId > firstId); // true
 
 ## API
 
-Generates a unique ID in the format `{prefix}_{base62UUID}`.
+Generates a unique ID in the format `{prefix}_{base58UUID}`.
 
 - **prefix**: Required string prefix for the ID
 - **Returns**: TypeScript-typed ID string with the prefix
@@ -40,14 +40,14 @@ Generates a unique ID in the format `{prefix}_{base62UUID}`.
 ## Features
 
 - **Time-ordered**: Uses UUID v7 for chronological sorting
-- **Compact**: Base62 encoding for shorter, URL-safe IDs
+- **Compact**: Base58 encoding for shorter, URL-safe IDs
 - **Type-safe**: Full TypeScript support with prefix typing
 - **Fast**: 1000+ IDs per second generation
 
 ## Dependencies
 
 - [`uuid`](https://www.npmjs.com/package/uuid) - UUID v7 generation
-- [`base-x`](https://www.npmjs.com/package/base-x) - Base62 encoding
+- [`@scure/base`](https://www.npmjs.com/package/@scure/base) - Base58 encoding
 
 ## License
 
