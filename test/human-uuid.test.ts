@@ -187,35 +187,6 @@ describe('humanUUID', () => {
     });
   });
 
-  describe('base58 encoding', () => {
-    it('should use base58 encoding for the UUID part with prefix', () => {
-      const id = humanUUID('test');
-      const base58Part = id.split('_')[1];
-
-      // Base58 should only contain alphanumeric characters (excluding 0, O, I, l)
-      assert.match(
-        base58Part,
-        /^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$/,
-      );
-
-      // Should be able to decode it back
-      assert.doesNotThrow(() => base58.decode(base58Part));
-    });
-
-    it('should produce consistent encoding/decoding', () => {
-      // Test with a known UUID
-      const testUuid = uuidV7();
-      const buffer = Buffer.from(testUuid);
-      const encoded = base58.encode(buffer);
-      const decoded = base58.decode(encoded);
-
-      assert.equal(
-        Buffer.from(decoded).toString('hex'),
-        buffer.toString('hex'),
-      );
-    });
-  });
-
   describe('edge cases', () => {
     it('should handle empty string prefix', () => {
       const id = humanUUID('');

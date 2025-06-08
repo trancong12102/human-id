@@ -20,9 +20,9 @@ pnpm add human-uuid
 import { humanUUID } from 'human-uuid';
 
 // Generate IDs with different prefixes
-const userId = humanUUID('user'); // user_1BVXue8CnY6eSRFn2bDLFU
-const orderId = humanUUID('order'); // order_1BVXue8D4K7gTRHp3eDMGV
-const apiKeyId = humanUUID('api-key'); // api-key_1BVXue8DfN8hUSIq4fENHW
+const userId = humanUUID('user'); // user_NE1Qs3yWoiD1Rb6CnLD1YLf12EHHQMboRU2CsmeztzdaCTv9K
+const orderId = humanUUID('order'); // order_NE1Qs3yWoiD1Rb6CnhMiJqxGunkvx68Qu4YwzjUasDs4UqBn7
+const apiKeyId = humanUUID('api-key'); // api-key_NE1Qs3yWoiD1Rb6CnhMiJqxGunkvx68Qu4jrtJBtPhBdDZP6y
 
 // IDs are time-ordered (later IDs > earlier IDs)
 const firstId = humanUUID('task');
